@@ -192,10 +192,14 @@ func seedInitialData(db *sql.DB) {
 		_, _ = db.Exec(`
 			INSERT INTO users_pins (name, role, pin_hash, can_trigger_manual, can_change_preset, can_send_tts, is_active)
 			VALUES 
-				('Admin TU', 'admin', '123456', 1, 1, 1, 1),
-				('Guru Piket', 'operator', '7890', 1, 0, 1, 1);
+				('Admin TU', 'admin', '741147', 1, 1, 1, 1),
+				('Guru Piket', 'operator', '432234', 1, 0, 1, 1);
 		`)
 		log.Println("[DB SEED] Default users (Admin TU, Guru Piket) created.")
+	} else {
+		// Auto-migrate legacy default PINs if still present
+		_, _ = db.Exec("UPDATE users_pins SET pin_hash = '741147' WHERE pin_hash = '123456'")
+		_, _ = db.Exec("UPDATE users_pins SET pin_hash = '432234' WHERE pin_hash IN ('7890', '43211234')")
 	}
 
 	// 2. Seed app_settings if empty

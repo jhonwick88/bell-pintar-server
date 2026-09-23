@@ -61,8 +61,8 @@ Aplikasi menggunakan autentikasi berbasis PIN cepat untuk memudahkan guru dan st
 
 | Pengguna | PIN Bawaan | Hak Akses & Peran |
 | :--- | :---: | :--- |
-| **Admin TU** | `123456` | **Akses Penuh:** Mengatur seluruh jadwal, preset baru, mengunggah audio custom, aktivasi lisensi, menyambungkan HP baru, dan konfigurasi relay. |
-| **Guru Piket** | `7890` | **Akses Operasional:** Membunyikan bel darurat manual, mengganti preset jadwal aktif, dan menyiarkan pengumuman suara / TTS. |
+| **Admin TU** | `741147` | **Akses Penuh:** Mengatur seluruh jadwal, preset baru, mengunggah audio custom, aktivasi lisensi, menyambungkan HP baru, dan konfigurasi relay. |
+| **Guru Piket** | `432234` | **Akses Operasional:** Membunyikan bel darurat manual, mengganti preset jadwal aktif, dan menyiarkan pengumuman suara / TTS. |
 
 ---
 
@@ -122,8 +122,8 @@ Guru piket dapat mengoperasikan bel sekolah dari HP Android di ruang piket atau 
 2. Di komputer server, buka **Pengaturan > Scan QR Pairing HP Guru Piket**.
 3. Arahkan kamera HP / Google Lens ke QR Code tersebut.
 4. Tautan *deep link* otomatis membuka aplikasi Bell Pintar di HP dan langsung menyambung ke IP server tanpa mengetik manual.
-5. Masukkan PIN Guru Piket (`7890`) untuk mulai mengendalikan bel dan menyiarkan pengumuman.
-6. **Manajemen Sesi:** Admin TU dapat melihat daftar HP yang sedang aktif dan mencabut izin akses kapan saja melalui dialog *Daftar Perangkat Aktif*.
+5. Masukkan PIN Guru Piket (`432234`) untuk mulai mengendalikan bel dan menyiarkan pengumuman.
+6. **Manajemen Sesi:** Admin TU dapat melihat daftar HP yang sedang aktif dan mencabut izin akses kapan saja melalui dialog *Daftar Perangkat Aktif*. Sistem secara otomatis membebaskan kuota lisensi saat perangkat logout resmi.
 
 ### 4.6 Pengaturan Sistem, Identitas Sekolah & Lisensi
 - **Identitas Sekolah (Nama Sekolah / Instansi):**
