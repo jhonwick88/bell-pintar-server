@@ -40,7 +40,6 @@ func SetupRoutes(r *gin.Engine) {
 	protected := api.Group("/")
 	protected.Use(auth.JWTMiddleware())
 	{
-		protected.POST("/auth/logout", handleLogout)
 		// Dashboard & Live Control
 		protected.POST("/bell/trigger", handleTriggerManualBell)
 		protected.POST("/tts/speak", handleTTSSpeak)
@@ -1118,7 +1117,7 @@ func handleGetLogs(c *gin.Context) {
 }
 
 func handleGetSettings(c *gin.Context) {
-	rows, err := database.DB.Query("SELECT key, value, description FROM app_settings")
+	rows, err := database.DB.Query("SELECT key, COALESCE(value, ''), COALESCE(description, '') FROM app_settings")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -1130,6 +1129,8 @@ func handleGetSettings(c *gin.Context) {
 		var k, v, desc string
 		if err := rows.Scan(&k, &v, &desc); err == nil {
 			settings[k] = v
+		} else {
+			log.Printf("[SETTINGS SCAN ERROR] %v", err)
 		}
 	}
 	c.JSON(http.StatusOK, settings)

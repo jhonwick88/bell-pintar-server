@@ -98,6 +98,9 @@ func (p *Player) executePlayback(absPath string) error {
 			filepath.Join("assets", "audio", baseName),
 			filepath.Join(`H:\FlutterProject\bell_pintar\server\assets\audio`, baseName),
 		}
+		if exe, err := os.Executable(); err == nil {
+			fallbacks = append(fallbacks, filepath.Join(filepath.Dir(exe), "assets", "audio", baseName))
+		}
 		found := false
 		for _, fb := range fallbacks {
 			if _, fbErr := os.Stat(fb); fbErr == nil {

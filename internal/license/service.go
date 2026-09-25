@@ -320,6 +320,7 @@ func ActivateLicense(licenseKey string, serverURL string) (*LicenseClaims, error
 // GetLicenseStatus returns current license state for UI & API
 func GetLicenseStatus() map[string]interface{} {
 	hwid, _ := GetMachineFingerprint()
+	schoolName := database.GetSetting("school_name", "SMK Pintar Labs Indonesia")
 	claims, err := GetLicenseClaims()
 
 	if err != nil || claims == nil {
@@ -328,6 +329,7 @@ func GetLicenseStatus() map[string]interface{} {
 			"status":           "UNLICENSED",
 			"message":          "Aplikasi belum teraktivasi lisensi",
 			"hardware_id":      hwid,
+			"school_name":      schoolName,
 			"days_remaining":   0,
 			"feat_max_devices": 1,
 			"features":         map[string]interface{}{},
@@ -353,6 +355,7 @@ func GetLicenseStatus() map[string]interface{} {
 		"edition":            edition,
 		"license_id":         claims.LicenseID,
 		"hardware_id":        hwid,
+		"school_name":        schoolName,
 		"expires_at":         expiresAtStr,
 		"days_remaining":     daysRemaining,
 		"feat_max_devices":   maxDevs,

@@ -219,6 +219,9 @@ func seedInitialData(db *sql.DB) {
 				('edition', 'FREE', 'Edisi Lisensi Sistem');
 		`)
 		log.Println("[DB SEED] Default app settings created.")
+	} else {
+		// Clean up any legacy NULL descriptions so Go sql.Scan never fails
+		_, _ = db.Exec("UPDATE app_settings SET description = '' WHERE description IS NULL")
 	}
 
 	// 3. Seed schedule_presets if empty
@@ -391,7 +394,13 @@ func SetSetting(key, val string) error {
 	if DB == nil {
 		return fmt.Errorf("db not initialized")
 	}
-	_, err := DB.Exec("INSERT OR REPLACE INTO app_settings (key, value, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP)", key, val)
+	_, err := DB.Exec(`
+		INSERT INTO app_settings (key, value, description, updated_at) 
+		VALUES (?, ?, '', CURRENT_TIMESTAMP)
+		ON CONFLICT(key) DO UPDATE SET 
+			value = excluded.value,
+			updated_at = CURRENT_TIMESTAMP
+	`, key, val)
 	return err
 }
 
