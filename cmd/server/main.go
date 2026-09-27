@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -18,6 +19,16 @@ import (
 )
 
 func main() {
+	// 0. Setup Dual Logging (Console + logs/server.log)
+	_ = os.MkdirAll("logs", 0755)
+	logFile, logErr := os.OpenFile("logs/server.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	if logErr == nil {
+		multiWriter := io.MultiWriter(os.Stdout, logFile)
+		log.SetOutput(multiWriter)
+		gin.DefaultWriter = multiWriter
+		gin.DefaultErrorWriter = multiWriter
+	}
+
 	log.Println("==================================================")
 	log.Println("     BELL PINTAR - SERVER ENGINE (GO DAEMON)      ")
 	log.Println("==================================================")

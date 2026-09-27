@@ -44,6 +44,7 @@ func (s *Scheduler) Start() {
 		return
 	}
 	s.isRunning = true
+	s.stopChan = make(chan struct{})
 	s.mu.Unlock()
 
 	log.Println("[SCHEDULER] Precision Background Scheduler started (1-sec interval).")
@@ -82,6 +83,8 @@ func (s *Scheduler) checkAndTrigger(now time.Time) {
 	dateStr := now.Format("2006-01-02")
 	minuteStr := now.Format("15:04")
 	timeMinZero := minuteStr + ":00"
+	timeMinSingle := fmt.Sprintf("%d:%02d", now.Hour(), now.Minute())
+	timeMinSingleZero := fmt.Sprintf("%d:%02d:00", now.Hour(), now.Minute())
 
 	// 1. Check Holiday / Exception Override for today
 	var isHoliday int
@@ -119,29 +122,39 @@ func (s *Scheduler) checkAndTrigger(now time.Time) {
 		dayOfWeek = 7 // Minggu
 	}
 
-	// 3. Query active schedules matching current minute (both "HH:MM" and "HH:MM:00")
+	// 3. Query active schedules matching current minute (robust to single/double digit hours, with/without seconds)
 	rows, err := database.DB.Query(`
-		SELECT s.id, s.title, s.custom_tts_text, COALESCE(s.volume_override, 0),
+		SELECT s.id, s.title, s.custom_tts_text,
 		       COALESCE(a.file_path, ''), COALESCE(a.title, '')
 		FROM schedules s
 		LEFT JOIN audio_files a ON s.audio_file_id = a.id
 		WHERE s.preset_id = ? 
 		  AND s.day_of_week = ? 
-		  AND (s.time_trigger = ? OR s.time_trigger = ? OR s.time_trigger LIKE ?)
+		  AND (
+		      TRIM(s.time_trigger) = ? 
+		      OR TRIM(s.time_trigger) = ? 
+		      OR TRIM(s.time_trigger) = ? 
+		      OR TRIM(s.time_trigger) = ? 
+		      OR TRIM(s.time_trigger) LIKE ? 
+		      OR SUBSTR(TRIM(s.time_trigger), 1, 5) = ?
+		  )
 		  AND s.is_active = 1
-	`, activePresetID, dayOfWeek, minuteStr, timeMinZero, minuteStr+":%")
+	`, activePresetID, dayOfWeek, minuteStr, timeMinZero, timeMinSingle, timeMinSingleZero, minuteStr+":%", minuteStr)
 
 	if err != nil {
+		log.Printf("[SCHEDULER DB ERROR] Query failed: %v", err)
 		return
 	}
 	defer rows.Close()
 
+	matchedCount := 0
 	for rows.Next() {
+		matchedCount++
 		var scheduleID int64
 		var title, customTTS, audioPath, audioTitle string
-		var volume int
 
-		if err := rows.Scan(&scheduleID, &title, &customTTS, &volume, &audioPath, &audioTitle); err != nil {
+		if err := rows.Scan(&scheduleID, &title, &customTTS, &audioPath, &audioTitle); err != nil {
+			log.Printf("[SCHEDULER SCAN ERROR] Scan failed: %v", err)
 			continue
 		}
 
@@ -160,13 +173,13 @@ func (s *Scheduler) checkAndTrigger(now time.Time) {
 
 		log.Printf("[SCHEDULER TRIGGER] Ringing Bell ONCE: '%s' at %s (Schedule ID: %d)", title, minuteStr, scheduleID)
 
-		go func(scID int64, t, cTTS, aPath, aTitle string, vol int) {
+		go func(scID int64, t, cTTS, aPath, aTitle string) {
 			opt := audio.PlayOptions{
 				Title:       t,
 				TriggerType: "SCHEDULED",
 				ScheduleID:  &scID,
 				UserName:    "SYSTEM_SCHEDULER",
-				Volume:      vol,
+				Volume:      100,
 			}
 
 			if cTTS != "" {
@@ -174,9 +187,10 @@ func (s *Scheduler) checkAndTrigger(now time.Time) {
 			} else if aPath != "" {
 				_ = audio.GlobalPlayer.PlayFile(aPath, opt)
 			} else {
-				log.Printf("[SCHEDULER] No audio or TTS assigned to schedule %d", scID)
+				log.Printf("[SCHEDULER] No specific audio assigned to schedule '%s' (ID %d). Playing fallback announcement...", t, scID)
+				_ = tts.GlobalEngine.SpeakText("Perhatian, saatnya "+t, "", opt)
 			}
-		}(scheduleID, title, customTTS, audioPath, audioTitle, volume)
+		}(scheduleID, title, customTTS, audioPath, audioTitle)
 	}
 }
 

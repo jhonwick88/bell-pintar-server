@@ -1,11 +1,13 @@
 package audio
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"sync"
 	"time"
 
@@ -90,16 +92,23 @@ func (p *Player) PlayFile(filePath string, opt PlayOptions) error {
 	return playErr
 }
 
-// executePlayback executes Windows media playback natively
+// executePlayback executes Windows media playback natively without infinite loops
 func (p *Player) executePlayback(absPath string) error {
 	if _, err := os.Stat(absPath); os.IsNotExist(err) {
 		baseName := filepath.Base(absPath)
 		fallbacks := []string{
 			filepath.Join("assets", "audio", baseName),
-			filepath.Join(`H:\FlutterProject\bell_pintar\server\assets\audio`, baseName),
+			filepath.Join(database.GetCustomAudioDir(), baseName),
+			filepath.Join(database.GetAppDataDir(), "audio_custom", baseName),
+			filepath.Join(database.GetAppDataDir(), "assets", "audio", baseName),
 		}
 		if exe, err := os.Executable(); err == nil {
-			fallbacks = append(fallbacks, filepath.Join(filepath.Dir(exe), "assets", "audio", baseName))
+			exeDir := filepath.Dir(exe)
+			fallbacks = append(fallbacks,
+				filepath.Join(exeDir, "assets", "audio", baseName),
+				filepath.Join(exeDir, "audio_custom", baseName),
+				filepath.Join(exeDir, "data", "audio_custom", baseName),
+			)
 		}
 		found := false
 		for _, fb := range fallbacks {
@@ -110,26 +119,63 @@ func (p *Player) executePlayback(absPath string) error {
 			}
 		}
 		if !found {
-			log.Printf("[AUDIO WARNING] Audio file not found at %s. Simulating 3s beep chime...", absPath)
-			time.Sleep(3 * time.Second)
-			return nil
+			log.Printf("[AUDIO WARNING] Audio file not found at '%s'. Playing Windows System Chime as fallback...", absPath)
+			fallbackScript := `
+				[System.Media.SystemSounds]::Asterisk.Play();
+				Start-Sleep -Milliseconds 800;
+				[System.Media.SystemSounds]::Exclamation.Play();
+				Start-Sleep -Milliseconds 800;
+				[System.Media.SystemSounds]::Asterisk.Play();
+			`
+			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+			defer cancel()
+			cmd := exec.CommandContext(ctx, "powershell", "-NoProfile", "-NonInteractive", "-Command", fallbackScript)
+			return cmd.Run()
 		}
 	}
 
-	// Use powershell Media.MediaPlayer for Windows
-	script := fmt.Sprintf(`
-		Add-Type -AssemblyName presentationCore;
-		$mediaPlayer = New-Object system.windows.media.mediaplayer;
-		$mediaPlayer.open('%s');
-		$mediaPlayer.Play();
-		Start-Sleep -Milliseconds 500;
-		while ($mediaPlayer.NaturalDuration.HasTimeSpan -eq $false) { Start-Sleep -Milliseconds 200 };
-		$duration = $mediaPlayer.NaturalDuration.TimeSpan.TotalSeconds;
-		Start-Sleep -Seconds ([Math]::Ceiling($duration) + 1);
-		$mediaPlayer.Stop();
-	`, filepath.ToSlash(absPath))
+	ext := strings.ToLower(filepath.Ext(absPath))
+	var script string
 
-	cmd := exec.Command("powershell", "-NoProfile", "-NonInteractive", "-Command", script)
+	if ext == ".wav" {
+		// Native SoundPlayer for ultra reliable and fast WAV playback
+		script = fmt.Sprintf(`
+			try {
+				$player = New-Object System.Media.SoundPlayer('%s');
+				$player.PlaySync();
+				exit 0;
+			} catch {
+				exit 1;
+			}
+		`, filepath.ToSlash(absPath))
+	} else {
+		// Native MediaPlayer for MP3 with safety timeout loop (max 15 iterations / 3 seconds wait for duration)
+		script = fmt.Sprintf(`
+			Add-Type -AssemblyName presentationCore;
+			$mediaPlayer = New-Object system.windows.media.mediaplayer;
+			$mediaPlayer.open('%s');
+			$mediaPlayer.Play();
+			Start-Sleep -Milliseconds 500;
+			$wait = 0;
+			while ($mediaPlayer.NaturalDuration.HasTimeSpan -eq $false -and $wait -lt 15) {
+				Start-Sleep -Milliseconds 200;
+				$wait++;
+			};
+			if ($mediaPlayer.NaturalDuration.HasTimeSpan) {
+				$duration = $mediaPlayer.NaturalDuration.TimeSpan.TotalSeconds;
+				Start-Sleep -Seconds ([Math]::Ceiling($duration) + 1);
+			} else {
+				Start-Sleep -Seconds 12;
+			};
+			$mediaPlayer.Stop();
+			$mediaPlayer.Close();
+		`, filepath.ToSlash(absPath))
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+	defer cancel()
+
+	cmd := exec.CommandContext(ctx, "powershell", "-NoProfile", "-NonInteractive", "-Command", script)
 	p.mu.Lock()
 	p.currentCmd = cmd
 	p.mu.Unlock()

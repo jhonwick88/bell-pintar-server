@@ -1,0 +1,137 @@
+2026/09/27 09:48:33 ==================================================
+2026/09/27 09:48:33      BELL PINTAR - SERVER ENGINE (GO DAEMON)      
+2026/09/27 09:48:33 ==================================================
+2026/09/27 09:48:33 [DB] Connected successfully to H:\FlutterProject\bell_pintar\server\data\bell.db
+2026/09/27 09:48:34 [SCHEDULER] Precision Background Scheduler started (1-sec interval).
+2026/09/27 09:48:34 [SERVER] Bell Pintar API listening on http://0.0.0.0:8088
+2026/09/27 09:48:34 [SERVER] Health check available at: http://localhost:8088/api/v1/ping
+2026/09/27 09:48:35 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:48:36 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:48:37 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:48:38 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:48:39 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:48:40 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:48:41 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:48:42 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:48:43 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:48:44 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:48:45 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:48:46 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:48:47 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:48:48 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:48:49 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:48:50 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:48:51 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:48:52 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:48:53 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:48:54 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:48:55 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:48:56 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:48:57 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:48:58 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:48:59 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:49:00 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:49:01 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:49:02 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:49:03 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:49:04 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:49:05 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:49:06 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:49:07 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:49:08 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:49:09 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:49:10 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:49:11 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:49:12 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:49:13 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:49:14 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:49:15 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:49:16 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:49:17 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:49:18 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:49:19 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:49:20 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:49:21 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:49:22 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:49:23 [SCHEDULER DB ERROR] Query failed: SQL logic error: no such column: s.volume_override (1)
+2026/09/27 09:54:16 ==================================================
+2026/09/27 09:54:16      BELL PINTAR - SERVER ENGINE (GO DAEMON)      
+2026/09/27 09:54:17 ==================================================
+2026/09/27 09:54:17 [DB] Connected successfully to H:\FlutterProject\bell_pintar\server\data\bell.db
+2026/09/27 09:54:17 [SCHEDULER] Precision Background Scheduler started (1-sec interval).
+2026/09/27 09:54:17 [SERVER] Bell Pintar API listening on http://0.0.0.0:8088
+2026/09/27 09:54:17 [SERVER] Health check available at: http://localhost:8088/api/v1/ping
+2026/09/27 09:54:50 [REST 200] GET /api/v1/license/status from 172.16.0.137 (8.4103ms)
+[GIN] 2026/09/27 - 09:54:50 | 200 |   8.41ms |    172.16.0.137 | GET      "/api/v1/license/status"
+2026/09/27 09:54:50 [REST 200] GET /api/v1/ping from 172.16.0.137 (1.0997ms)
+[GIN] 2026/09/27 - 09:54:50 | 200 |    1.6ms |    172.16.0.137 | GET      "/api/v1/ping"
+2026/09/27 09:54:50 [REST 200] GET /api/v1/dashboard/status from 172.16.0.137 (520.9µs)
+[GIN] 2026/09/27 - 09:54:50 | 200 |  520.9µs |    172.16.0.137 | GET      "/api/v1/dashboard/status"
+2026/09/27 09:54:50 [REST ERROR 401] GET /api/v1/presets from 172.16.0.137 (Latency: 0s)
+   -> Payload: 
+   -> Response: {"error":"Invalid or expired token"}
+[GIN] 2026/09/27 - 09:54:50 | 401 |  516.4µs |    172.16.0.137 | GET      "/api/v1/presets"
+2026/09/27 09:54:53 [REST 200] POST /api/v1/auth/logout from 172.16.0.137 (0s)
+[GIN] 2026/09/27 - 09:54:53 | 200 |       0s |    172.16.0.137 | POST     "/api/v1/auth/logout"
+2026/09/27 09:54:58 [REST ERROR 401] POST /api/v1/auth/login-pin from 172.16.0.137 (Latency: 733.5µs)
+   -> Payload: {"pin":"147741","device_id":"dev_1789893673825_windows","device_name":"PC DESKTOP-NICNKEP","platform":"windows"}
+   -> Response: {"error":"PIN tidak valid atau pengguna nonaktif"}
+[GIN] 2026/09/27 - 09:54:58 | 401 |  733.5µs |    172.16.0.137 | POST     "/api/v1/auth/login-pin"
+2026/09/27 09:55:08 [REST 200] POST /api/v1/auth/login-pin from 172.16.0.137 (1.0549ms)
+[GIN] 2026/09/27 - 09:55:08 | 200 |   1.05ms |    172.16.0.137 | POST     "/api/v1/auth/login-pin"
+2026/09/27 09:55:08 [REST 200] GET /api/v1/ping from 172.16.0.137 (1.0371ms)
+[GIN] 2026/09/27 - 09:55:08 | 200 |   1.03ms |    172.16.0.137 | GET      "/api/v1/ping"
+2026/09/27 09:55:08 [REST 200] GET /api/v1/dashboard/status from 172.16.0.137 (0s)
+[GIN] 2026/09/27 - 09:55:08 | 200 |  517.9µs |    172.16.0.137 | GET      "/api/v1/dashboard/status"
+2026/09/27 09:55:08 [REST 200] GET /api/v1/presets from 172.16.0.137 (12.2664ms)
+[GIN] 2026/09/27 - 09:55:08 | 200 |  12.26ms |    172.16.0.137 | GET      "/api/v1/presets"
+2026/09/27 09:55:08 [REST 200] GET /api/v1/schedules?preset_id=1&day=7 from 172.16.0.137 (0s)
+[GIN] 2026/09/27 - 09:55:08 | 200 |       0s |    172.16.0.137 | GET      "/api/v1/schedules?preset_id=1&day=7"
+2026/09/27 09:55:08 [REST] GET /audio - Returning 138 audio tracks
+2026/09/27 09:55:08 [REST 200] GET /api/v1/audio from 172.16.0.137 (14.4359ms)
+[GIN] 2026/09/27 - 09:55:08 | 200 |  14.43ms |    172.16.0.137 | GET      "/api/v1/audio"
+2026/09/27 09:55:08 [REST 200] GET /api/v1/announcements from 172.16.0.137 (502.4µs)
+[GIN] 2026/09/27 - 09:55:08 | 200 |  502.4µs |    172.16.0.137 | GET      "/api/v1/announcements"
+2026/09/27 09:55:08 [REST 200] GET /api/v1/logs from 172.16.0.137 (0s)
+[GIN] 2026/09/27 - 09:55:08 | 200 |       0s |    172.16.0.137 | GET      "/api/v1/logs"
+2026/09/27 09:55:10 [REST 200] GET /api/v1/presets from 172.16.0.137 (0s)
+[GIN] 2026/09/27 - 09:55:10 | 200 |       0s |    172.16.0.137 | GET      "/api/v1/presets"
+2026/09/27 09:55:10 [REST 200] GET /api/v1/schedules?preset_id=1&day=7 from 172.16.0.137 (0s)
+[GIN] 2026/09/27 - 09:55:10 | 200 |       0s |    172.16.0.137 | GET      "/api/v1/schedules?preset_id=1&day=7"
+2026/09/27 09:55:14 [REST 200] GET /api/v1/schedules?preset_id=1&day=1 from 172.16.0.137 (531.3µs)
+[GIN] 2026/09/27 - 09:55:14 | 200 |  531.3µs |    172.16.0.137 | GET      "/api/v1/schedules?preset_id=1&day=1"
+2026/09/27 09:55:16 [REST 200] GET /api/v1/schedules?preset_id=1&day=1 from 172.16.0.137 (0s)
+[GIN] 2026/09/27 - 09:55:16 | 200 |       0s |    172.16.0.137 | GET      "/api/v1/schedules?preset_id=1&day=1"
+2026/09/27 09:55:17 [REST 200] GET /api/v1/schedules?preset_id=1&day=7 from 172.16.0.137 (0s)
+[GIN] 2026/09/27 - 09:55:17 | 200 |       0s |    172.16.0.137 | GET      "/api/v1/schedules?preset_id=1&day=7"
+2026/09/27 09:55:40 [REST SUCCESS] POST /schedules - Schedule created ID=26: 'TESS' at 09:57:00 (Day 7, Preset 1)
+2026/09/27 09:55:40 [REST 201] POST /api/v1/schedules from 172.16.0.137 (25.616ms)
+[GIN] 2026/09/27 - 09:55:40 | 201 |  26.18ms |    172.16.0.137 | POST     "/api/v1/schedules"
+2026/09/27 09:55:40 [REST 200] GET /api/v1/schedules?preset_id=1&day=7 from 172.16.0.137 (0s)
+[GIN] 2026/09/27 - 09:55:40 | 200 |       0s |    172.16.0.137 | GET      "/api/v1/schedules?preset_id=1&day=7"
+2026/09/27 09:55:42 [REST 200] GET /api/v1/ping from 172.16.0.137 (1.0373ms)
+[GIN] 2026/09/27 - 09:55:42 | 200 |   1.03ms |    172.16.0.137 | GET      "/api/v1/ping"
+2026/09/27 09:55:42 [REST 200] GET /api/v1/dashboard/status from 172.16.0.137 (1.7926ms)
+[GIN] 2026/09/27 - 09:55:42 | 200 |   1.79ms |    172.16.0.137 | GET      "/api/v1/dashboard/status"
+2026/09/27 09:55:42 [REST 200] GET /api/v1/presets from 172.16.0.137 (0s)
+[GIN] 2026/09/27 - 09:55:42 | 200 |       0s |    172.16.0.137 | GET      "/api/v1/presets"
+2026/09/27 09:55:42 [REST 200] GET /api/v1/schedules?preset_id=1&day=7 from 172.16.0.137 (0s)
+[GIN] 2026/09/27 - 09:55:42 | 200 |       0s |    172.16.0.137 | GET      "/api/v1/schedules?preset_id=1&day=7"
+2026/09/27 09:55:42 [REST] GET /audio - Returning 138 audio tracks
+2026/09/27 09:55:42 [REST 200] GET /api/v1/audio from 172.16.0.137 (15.4458ms)
+[GIN] 2026/09/27 - 09:55:42 | 200 |  15.44ms |    172.16.0.137 | GET      "/api/v1/audio"
+2026/09/27 09:55:42 [REST 200] GET /api/v1/announcements from 172.16.0.137 (0s)
+[GIN] 2026/09/27 - 09:55:42 | 200 |       0s |    172.16.0.137 | GET      "/api/v1/announcements"
+2026/09/27 09:55:42 [REST 200] GET /api/v1/logs from 172.16.0.137 (0s)
+[GIN] 2026/09/27 - 09:55:42 | 200 |       0s |    172.16.0.137 | GET      "/api/v1/logs"
+2026/09/27 09:57:00 [SCHEDULER TRIGGER] Ringing Bell ONCE: 'TESS' at 09:57 (Schedule ID: 26)
+2026/09/27 09:57:00 [AUDIO SEQUENCE] 1. Activating Relay ON for track 'TESS'...
+2026/09/27 09:57:00 [RELAY TRIGGER] >>> AMPLIFIER POWER ON <<< (Mode: USB_HID, Port: COM3)
+2026/09/27 09:57:00 [AUDIO SEQUENCE] 2. Waiting delay_before (5s)...
+2026/09/27 09:57:05 [AUDIO SEQUENCE] 3. Playing audio file: H:\FlutterProject\bell_pintar\server\assets\audio\Bel Ujian 5 Menit Akhir Ujian.mp3
+2026/09/27 09:57:24 [AUDIO SEQUENCE] 4. Waiting delay_after (5s)...
+2026/09/27 09:57:29 [AUDIO SEQUENCE] 5. Deactivating Relay OFF...
+2026/09/27 09:57:29 [RELAY TRIGGER] <<< AMPLIFIER POWER OFF >>> (Mode: USB_HID, Port: COM3)
+2026/09/27 10:48:03 [SERVER] Shutting down Bell Pintar Server gracefully...
+2026/09/27 10:48:03 [SCHEDULER] Scheduler stopped.
+2026/09/27 10:48:03 [SERVER] Server exited cleanly.

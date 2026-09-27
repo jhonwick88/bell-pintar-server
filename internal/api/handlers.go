@@ -1,8 +1,10 @@
 package api
 
 import (
+	"bytes"
 	"database/sql"
 	"fmt"
+	"io"
 	"log"
 	"net"
 	"net/http"
@@ -23,8 +25,65 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type bodyLogWriter struct {
+	gin.ResponseWriter
+	body *bytes.Buffer
+}
+
+func (w bodyLogWriter) Write(b []byte) (int, error) {
+	w.body.Write(b)
+	return w.ResponseWriter.Write(b)
+}
+
 // SetupRoutes registers all API endpoints
 func SetupRoutes(r *gin.Engine) {
+	// Global REST Logging Middleware
+	r.Use(func(c *gin.Context) {
+		start := time.Now()
+		path := c.Request.URL.Path
+		raw := c.Request.URL.RawQuery
+		method := c.Request.Method
+
+		// Capture request payload for POST/PUT/PATCH/DELETE
+		var reqPayload string
+		if c.Request.Body != nil && (method == "POST" || method == "PUT" || method == "PATCH") {
+			bodyBytes, err := io.ReadAll(c.Request.Body)
+			if err == nil {
+				c.Request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+				if len(bodyBytes) > 1024 {
+					reqPayload = string(bodyBytes[:1024]) + " ...[truncated]"
+				} else {
+					reqPayload = string(bodyBytes)
+				}
+			}
+		}
+
+		blw := &bodyLogWriter{body: bytes.NewBufferString(""), ResponseWriter: c.Writer}
+		c.Writer = blw
+
+		c.Next()
+
+		latency := time.Since(start)
+		statusCode := c.Writer.Status()
+		clientIP := c.ClientIP()
+
+		if raw != "" {
+			path = path + "?" + raw
+		}
+
+		if statusCode >= 400 {
+			respBody := blw.body.String()
+			if len(respBody) > 512 {
+				respBody = respBody[:512] + " ...[truncated]"
+			}
+			log.Printf("[REST ERROR %d] %s %s from %s (Latency: %v)\n   -> Payload: %s\n   -> Response: %s",
+				statusCode, method, path, clientIP, latency, reqPayload, respBody)
+		} else {
+			log.Printf("[REST %d] %s %s from %s (%v)",
+				statusCode, method, path, clientIP, latency)
+		}
+	})
+
 	api := r.Group("/api/v1")
 
 	// Public Routes
@@ -605,7 +664,8 @@ func handleCreateSchedule(c *gin.Context) {
 		CustomTTSText string `json:"custom_tts_text"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		log.Printf("[REST ERROR] POST /schedules - Bind JSON failed: %v", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Format payload tidak valid: " + err.Error()})
 		return
 	}
 
@@ -615,11 +675,13 @@ func handleCreateSchedule(c *gin.Context) {
 	`, req.PresetID, req.DayOfWeek, req.TimeTrigger, req.Title, req.AudioFileID, req.CustomTTSText)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		log.Printf("[REST ERROR] POST /schedules - DB Exec failed: %v (PresetID=%d, Day=%d, Time='%s', Title='%s')", err, req.PresetID, req.DayOfWeek, req.TimeTrigger, req.Title)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menambahkan jadwal: " + err.Error()})
 		return
 	}
 
 	id, _ := res.LastInsertId()
+	log.Printf("[REST SUCCESS] POST /schedules - Schedule created ID=%d: '%s' at %s (Day %d, Preset %d)", id, req.Title, req.TimeTrigger, req.DayOfWeek, req.PresetID)
 	c.JSON(http.StatusCreated, gin.H{"id": id, "message": "Jadwal bel berhasil ditambahkan"})
 }
 
@@ -634,7 +696,8 @@ func handleUpdateSchedule(c *gin.Context) {
 		IsActive      *bool  `json:"is_active"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		log.Printf("[REST ERROR] PUT /schedules/%s - Bind JSON failed: %v", id, err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Format payload tidak valid: " + err.Error()})
 		return
 	}
 
@@ -643,27 +706,34 @@ func handleUpdateSchedule(c *gin.Context) {
 		isActiveVal = 0
 	}
 
-	_, err := database.DB.Exec(`
+	res, err := database.DB.Exec(`
 		UPDATE schedules 
-		SET day_of_week = ?, time_trigger = ?, title = ?, audio_file_id = ?, custom_tts_text = ?, is_active = ?, updated_at = CURRENT_TIMESTAMP
+		SET day_of_week = ?, time_trigger = ?, title = ?, audio_file_id = ?, custom_tts_text = ?, is_active = ?
 		WHERE id = ?
 	`, req.DayOfWeek, req.TimeTrigger, req.Title, req.AudioFileID, req.CustomTTSText, isActiveVal, id)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		log.Printf("[REST ERROR] PUT /schedules/%s - DB Exec failed: %v (Payload: Day=%d, Time='%s', Title='%s', AudioID=%v)", id, err, req.DayOfWeek, req.TimeTrigger, req.Title, req.AudioFileID)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal memperbarui jadwal di database: " + err.Error()})
 		return
 	}
+
+	rowsAff, _ := res.RowsAffected()
+	log.Printf("[REST SUCCESS] PUT /schedules/%s - Schedule updated (%d row affected): Title='%s', Time='%s', Day=%d, AudioID=%v", id, rowsAff, req.Title, req.TimeTrigger, req.DayOfWeek, req.AudioFileID)
 
 	c.JSON(http.StatusOK, gin.H{"message": "Jadwal berhasil diperbarui"})
 }
 
 func handleDeleteSchedule(c *gin.Context) {
 	id := c.Param("id")
-	_, err := database.DB.Exec("DELETE FROM schedules WHERE id = ?", id)
+	res, err := database.DB.Exec("DELETE FROM schedules WHERE id = ?", id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		log.Printf("[REST ERROR] DELETE /schedules/%s - DB Exec failed: %v", id, err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menghapus jadwal: " + err.Error()})
 		return
 	}
+	rowsAff, _ := res.RowsAffected()
+	log.Printf("[REST SUCCESS] DELETE /schedules/%s - Schedule deleted (%d row affected)", id, rowsAff)
 	c.JSON(http.StatusOK, gin.H{"message": "Jadwal berhasil dihapus"})
 }
 
@@ -688,14 +758,18 @@ func handleClearDaySchedules(c *gin.Context) {
 }
 
 func handleGetAudioList(c *gin.Context) {
+	// Auto-sync any unindexed audio files in assets/audio
+	database.SyncAssetsAudioFiles(database.DB)
+
 	rows, err := database.DB.Query("SELECT id, title, category, file_path, duration_seconds, is_builtin FROM audio_files ORDER BY id ASC")
 	if err != nil {
+		log.Printf("[REST ERROR] GET /audio - DB Query failed: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	defer rows.Close()
 
-	var audios []gin.H
+	audios := make([]gin.H, 0)
 	for rows.Next() {
 		var id, dur, isBuiltin int
 		var title, cat, path string
@@ -710,6 +784,7 @@ func handleGetAudioList(c *gin.Context) {
 			})
 		}
 	}
+	log.Printf("[REST] GET /audio - Returning %d audio tracks", len(audios))
 	c.JSON(http.StatusOK, audios)
 }
 

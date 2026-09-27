@@ -294,54 +294,135 @@ func seedInitialData(db *sql.DB) {
 	}
 
 	// Auto-scan assets/audio for all MP3 and WAV files
-	syncAssetsAudioFiles(db)
+	SyncAssetsAudioFiles(db)
 
-	// 6. Seed regular schedules if empty (Days 1 to 5 only, Saturday and Sunday empty)
+	// 6. Seed regular schedules for all presets if empty
 	var schedCount int
 	_ = db.QueryRow("SELECT COUNT(*) FROM schedules").Scan(&schedCount)
 	if schedCount == 0 {
+		// Preset 1: Jadwal Reguler 5 Hari (Senin - Jumat)
 		for day := 1; day <= 5; day++ {
 			if day == 5 {
 				_, _ = db.Exec(`
-					INSERT INTO schedules (preset_id, day_of_week, time_trigger, title, is_active)
+					INSERT INTO schedules (preset_id, day_of_week, time_trigger, title, audio_file_id, is_active)
 					VALUES 
-						(1, 5, '06:55', 'Lagu Indonesia Raya Pembuka', 1),
-						(1, 5, '07:00', 'Masuk Jam Pelajaran Ke-1', 1),
-						(1, 5, '09:00', 'Waktu Istirahat Jumat', 1),
-						(1, 5, '09:20', 'Masuk Kelas Jam Ke-4', 1),
-						(1, 5, '11:20', 'Bel Pulang & Persiapan Sholat Jumat', 1);
+						(1, 5, '06:55', 'Lagu Indonesia Raya Pembuka', 10, 1),
+						(1, 5, '07:00', 'Masuk Jam Pelajaran Ke-1', 3, 1),
+						(1, 5, '09:00', 'Waktu Istirahat Jumat', 5, 1),
+						(1, 5, '09:20', 'Masuk Kelas Jam Ke-4', 6, 1),
+						(1, 5, '11:20', 'Bel Pulang & Persiapan Sholat Jumat', 8, 1);
 				`)
 			} else {
 				_, _ = db.Exec(`
-					INSERT INTO schedules (preset_id, day_of_week, time_trigger, title, is_active)
+					INSERT INTO schedules (preset_id, day_of_week, time_trigger, title, audio_file_id, is_active)
 					VALUES 
-						(1, ?, '07:00', 'Masuk Jam Pertama', 1),
-						(1, ?, '09:45', 'Istirahat Pertama', 1),
-						(1, ?, '10:15', 'Masuk Setelah Istirahat', 1),
-						(1, ?, '12:00', 'Istirahat & Sholat Dzuhur', 1),
-						(1, ?, '15:00', 'Bel Pulang Sekolah', 1);
+						(1, ?, '07:00', 'Masuk Jam Pertama', 3, 1),
+						(1, ?, '09:45', 'Istirahat Pertama', 5, 1),
+						(1, ?, '10:15', 'Masuk Setelah Istirahat', 6, 1),
+						(1, ?, '12:00', 'Istirahat & Sholat Dzuhur', 7, 1),
+						(1, ?, '15:00', 'Bel Pulang Sekolah', 8, 1);
 				`, day, day, day, day, day)
 			}
 		}
-		log.Println("[DB SEED] Default regular schedules created (Senin - Jumat).")
+
+		// Preset 2: Jadwal Reguler 6 Hari (Senin - Sabtu)
+		for day := 1; day <= 6; day++ {
+			if day == 5 {
+				_, _ = db.Exec(`
+					INSERT INTO schedules (preset_id, day_of_week, time_trigger, title, audio_file_id, is_active)
+					VALUES 
+						(2, 5, '06:55', 'Lagu Indonesia Raya Pembuka', 10, 1),
+						(2, 5, '07:00', 'Masuk Jam Pelajaran Ke-1', 3, 1),
+						(2, 5, '09:00', 'Waktu Istirahat Jumat', 5, 1),
+						(2, 5, '09:20', 'Masuk Kelas Jam Ke-4', 6, 1),
+						(2, 5, '11:20', 'Bel Pulang & Persiapan Sholat Jumat', 8, 1);
+				`)
+			} else if day == 6 {
+				_, _ = db.Exec(`
+					INSERT INTO schedules (preset_id, day_of_week, time_trigger, title, audio_file_id, is_active)
+					VALUES 
+						(2, 6, '07:00', 'Masuk Jam Pertama Sabtu', 3, 1),
+						(2, 6, '09:30', 'Istirahat Sabtu', 5, 1),
+						(2, 6, '10:00', 'Masuk Jam Ke-4 Sabtu', 6, 1),
+						(2, 6, '12:30', 'Bel Pulang & Ekstrakurikuler', 8, 1);
+				`)
+			} else {
+				_, _ = db.Exec(`
+					INSERT INTO schedules (preset_id, day_of_week, time_trigger, title, audio_file_id, is_active)
+					VALUES 
+						(2, ?, '07:00', 'Masuk Jam Pertama', 3, 1),
+						(2, ?, '09:45', 'Istirahat Pertama', 5, 1),
+						(2, ?, '10:15', 'Masuk Setelah Istirahat', 6, 1),
+						(2, ?, '12:00', 'Istirahat & Sholat Dzuhur', 7, 1),
+						(2, ?, '14:00', 'Bel Pulang Sekolah', 8, 1);
+				`, day, day, day, day, day)
+			}
+		}
+
+		// Preset 3: Jadwal Khusus Bulan Ramadhan (Senin - Jumat)
+		for day := 1; day <= 5; day++ {
+			if day == 5 {
+				_, _ = db.Exec(`
+					INSERT INTO schedules (preset_id, day_of_week, time_trigger, title, audio_file_id, is_active)
+					VALUES 
+						(3, 5, '07:30', 'Masuk Jam Ke-1 Ramadhan', 3, 1),
+						(3, 5, '09:15', 'Istirahat Ramadhan Jumat', 5, 1),
+						(3, 5, '09:30', 'Masuk Setelah Istirahat', 6, 1),
+						(3, 5, '11:00', 'Bel Pulang Sholat Jumat', 8, 1);
+				`)
+			} else {
+				_, _ = db.Exec(`
+					INSERT INTO schedules (preset_id, day_of_week, time_trigger, title, audio_file_id, is_active)
+					VALUES 
+						(3, ?, '07:30', 'Masuk Jam Pertama Ramadhan', 3, 1),
+						(3, ?, '09:30', 'Istirahat Ramadhan', 5, 1),
+						(3, ?, '09:50', 'Masuk Setelah Istirahat', 6, 1),
+						(3, ?, '12:30', 'Sholat Dzuhur & Bel Pulang', 7, 1);
+				`, day, day, day, day)
+			}
+		}
+
+		// Preset 4: Jadwal Penilaian Akhir Semester / Ujian (Senin - Jumat)
+		for day := 1; day <= 5; day++ {
+			_, _ = db.Exec(`
+				INSERT INTO schedules (preset_id, day_of_week, time_trigger, title, audio_file_id, is_active)
+				VALUES 
+					(4, ?, '07:30', 'Ujian Sesi 1 Dimulai', 11, 1),
+					(4, ?, '09:30', 'Ujian Sesi 1 Selesai / Istirahat', 12, 1),
+					(4, ?, '10:00', 'Ujian Sesi 2 Dimulai', 11, 1),
+					(4, ?, '12:00', 'Ujian Sesi 2 Selesai / Pulang', 12, 1);
+			`, day, day, day, day)
+		}
+
+		// Preset 5: Jadwal Porseni / Classmeeting (Senin - Jumat)
+		for day := 1; day <= 5; day++ {
+			_, _ = db.Exec(`
+				INSERT INTO schedules (preset_id, day_of_week, time_trigger, title, audio_file_id, is_active)
+				VALUES 
+					(5, ?, '07:00', 'Apel Pagi / Pembukaan Kegiatan', 9, 1),
+					(5, ?, '07:30', 'Kegiatan Sesi Pagi Dimulai', 3, 1),
+					(5, ?, '10:00', 'Istirahat & Snack', 5, 1),
+					(5, ?, '10:30', 'Kegiatan Sesi Siang Dimulai', 6, 1),
+					(5, ?, '13:00', 'Kegiatan Selesai / Pulang', 8, 1);
+			`, day, day, day, day, day)
+		}
+
+		log.Println("[DB SEED] Default schedules created for all 5 presets (Reguler 5D, 6D, Ramadhan, Ujian, Event).")
+	} else {
+		// Auto-fix any legacy schedules with null audio_file_id and empty custom_tts_text
+		_, _ = db.Exec("UPDATE schedules SET audio_file_id = 1 WHERE (audio_file_id IS NULL OR audio_file_id = 0) AND (custom_tts_text IS NULL OR custom_tts_text = '')")
 	}
 }
 
 // GetAppDataDir returns the root data directory.
 // Priority:
 // 1. Environment variable BELL_DATA_DIR
-// 2. Dev environment H:\AMAN (if drive H and directory exist)
-// 3. Application executable directory / data
-// 4. Fallback: ./data
+// 2. Application executable directory / data
+// 3. Fallback: ./data
 func GetAppDataDir() string {
 	if custom := os.Getenv("BELL_DATA_DIR"); custom != "" {
 		_ = os.MkdirAll(custom, 0755)
 		return custom
-	}
-
-	// Dev environment compatibility
-	if _, err := os.Stat(`H:\AMAN`); err == nil {
-		return `H:\AMAN`
 	}
 
 	// Portable / Exe relative directory
@@ -404,15 +485,20 @@ func SetSetting(key, val string) error {
 	return err
 }
 
-// syncAssetsAudioFiles scans assets/audio for all MP3 and WAV files and registers any missing ones
-func syncAssetsAudioFiles(db *sql.DB) {
-	candidates := []string{
-		filepath.Join("assets", "audio"),
-		`H:\FlutterProject\bell_pintar\server\assets\audio`,
+// SyncAssetsAudioFiles scans assets/audio for all MP3 and WAV files and registers any missing ones
+func SyncAssetsAudioFiles(db *sql.DB) {
+	if db == nil {
+		return
 	}
+	var candidates []string
 	if exe, err := os.Executable(); err == nil {
 		candidates = append(candidates, filepath.Join(filepath.Dir(exe), "assets", "audio"))
 	}
+	candidates = append(candidates,
+		filepath.Join("assets", "audio"),
+		filepath.Join("server", "assets", "audio"),
+		filepath.Join(GetAppDataDir(), "assets", "audio"),
+	)
 
 	var audioDir string
 	for _, c := range candidates {
@@ -441,11 +527,11 @@ func syncAssetsAudioFiles(db *sql.DB) {
 		}
 
 		filename := e.Name()
-		fullPath, _ := filepath.Abs(filepath.Join(audioDir, filename))
+		relPath := filepath.Join("assets", "audio", filename)
 
 		// Check if already registered by filename
 		var exists int
-		_ = db.QueryRow("SELECT COUNT(*) FROM audio_files WHERE file_path LIKE ?", "%"+filename).Scan(&exists)
+		_ = db.QueryRow("SELECT COUNT(*) FROM audio_files WHERE file_path LIKE ? OR file_path = ?", "%"+filename, relPath).Scan(&exists)
 		if exists > 0 {
 			continue
 		}
@@ -470,7 +556,7 @@ func syncAssetsAudioFiles(db *sql.DB) {
 		_, err := db.Exec(`
 			INSERT INTO audio_files (title, category, file_path, duration_seconds, is_builtin)
 			VALUES (?, ?, ?, 15, 1)
-		`, title, category, fullPath)
+		`, title, category, relPath)
 		if err == nil {
 			addedCount++
 		}
