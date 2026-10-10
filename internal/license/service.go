@@ -300,7 +300,7 @@ func ActivateLicense(licenseKey string, serverURL string) (*LicenseClaims, error
 		_, expStr, _, _ := GetExpirationTime(claims)
 
 		edition := "BASIC"
-		if IsFeatureEnabled("feat_usb_relay") {
+		if IsFeatureEnabled("feat_usb_relay") || IsFeatureEnabled("feat_tts") {
 			edition = "PRO"
 		}
 
@@ -343,7 +343,7 @@ func GetLicenseStatus() map[string]interface{} {
 	}
 
 	edition := "BASIC"
-	if IsFeatureEnabled("feat_usb_relay") {
+	if IsFeatureEnabled("feat_usb_relay") || IsFeatureEnabled("feat_tts") {
 		edition = "PRO"
 	}
 

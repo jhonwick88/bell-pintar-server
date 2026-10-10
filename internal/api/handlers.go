@@ -409,6 +409,13 @@ func handleTriggerManualBell(c *gin.Context) {
 }
 
 func handleTTSSpeak(c *gin.Context) {
+	if !license.IsFeatureEnabled("feat_tts") {
+		c.JSON(http.StatusForbidden, gin.H{
+			"error": "Fitur Text-to-Speech (TTS) tidak aktif pada lisensi sekolah ini (Fitur PRO). Hubungi penyedia lisensi.",
+		})
+		return
+	}
+
 	var req struct {
 		Text           string  `json:"text" binding:"required"`
 		ChimeAudioPath string  `json:"chime_audio_path"`
@@ -1133,6 +1140,13 @@ func handleDeleteAnnouncement(c *gin.Context) {
 }
 
 func handleTriggerAnnouncement(c *gin.Context) {
+	if !license.IsFeatureEnabled("feat_tts") {
+		c.JSON(http.StatusForbidden, gin.H{
+			"error": "Fitur Text-to-Speech (TTS) tidak aktif pada lisensi sekolah ini (Fitur PRO). Hubungi penyedia lisensi.",
+		})
+		return
+	}
+
 	id := c.Param("id")
 	var text string
 	var chimeID sql.NullInt64
@@ -1226,6 +1240,13 @@ func handleSaveSettings(c *gin.Context) {
 }
 
 func handleTestRelay(c *gin.Context) {
+	if !license.IsFeatureEnabled("feat_usb_relay") {
+		c.JSON(http.StatusForbidden, gin.H{
+			"error": "Fitur Kontrol USB Relay Ampli hanya tersedia pada paket lisensi PRO (feat_usb_relay). Hubungi penyedia lisensi.",
+		})
+		return
+	}
+
 	var req struct {
 		PowerOn bool `json:"power_on"`
 	}

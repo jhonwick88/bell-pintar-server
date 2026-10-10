@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"bell_server/internal/database"
+	"bell_server/internal/license"
 )
 
 type Controller struct {
@@ -24,6 +25,15 @@ var Instance = &Controller{
 func (rc *Controller) SetPower(on bool) error {
 	rc.mu.Lock()
 	defer rc.mu.Unlock()
+
+	// Enforce USB Relay License
+	if !license.IsFeatureEnabled("feat_usb_relay") {
+		if on {
+			log.Printf("[RELAY] Fitur USB Relay Ampli terkunci (Fitur PRO). Lisensi tidak mengizinkan kontrol relay.")
+		}
+		rc.isPoweredOn = false
+		return nil
+	}
 
 	enabled := database.GetSetting("relay_enabled", "1") == "1"
 	if !enabled {

@@ -10,6 +10,7 @@ import (
 
 	"bell_server/internal/audio"
 	"bell_server/internal/database"
+	"bell_server/internal/license"
 )
 
 type Engine struct {
@@ -25,6 +26,12 @@ func init() {
 
 // SpeakText synthesizes text to speech using Windows OneCore (Microsoft Andika) or SAPI fallback
 func (e *Engine) SpeakText(text string, chimeAudioPath string, opt audio.PlayOptions, speedOverride ...float64) error {
+	// Enforce TTS Feature License
+	if !license.IsFeatureEnabled("feat_tts") {
+		log.Printf("[TTS] Fitur TTS tidak aktif pada lisensi sekolah ini (feat_tts = false). Membatalkan sintesis suara.")
+		return fmt.Errorf("fitur Text-to-Speech (TTS) tidak aktif pada lisensi sekolah ini (Fitur PRO)")
+	}
+
 	finalSpeed := 1.0
 	if len(speedOverride) > 0 && speedOverride[0] >= 0.5 && speedOverride[0] <= 3.0 {
 		finalSpeed = speedOverride[0]
